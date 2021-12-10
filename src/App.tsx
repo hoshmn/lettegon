@@ -9,30 +9,26 @@ export default function App() {
   const [letters, setLetters] = React.useState("");
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
-  const [truncate, setTruncate] = React.useState(true);
+  const [truncate, setTruncate] = React.useState(false);
 
-  // TODO make truncation an option
-  // const [lettegons, setLettegons] = React.useState([])
+  const forceTruncate = sideCount >= sideTruncCap;
+
   const { lettegons, resultFraction } = createBoards({
     letters,
     sideCount,
     sideSize,
-    truncate
+    truncate: truncate || forceTruncate
   });
   const truncated = resultFraction < 1;
 
-  console.log("* ", truncate);
+  // const uns = _.uniqBy(lettegons, "id");
+  // console.log("* ", uns.length === lettegons.length);
 
-  const uns = _.uniqBy(lettegons, "id");
   return (
     <div className="App">
       Side count: {sideCount}{" "}
       <input
-        onChange={(e) => {
-          const val = Number(e.target.value);
-          setSideCount(val);
-          if (val >= sideTruncCap) setTruncate(true);
-        }}
+        onChange={(e) => setSideCount(Number(e.target.value))}
         type="range"
         id="sideCount"
         name="side count"
@@ -53,14 +49,14 @@ export default function App() {
       />
       <br />
       <br />
-      Cap results (for performance):
+      Cap results (for performance):{" "}
       <input
         onChange={() => setTruncate(!truncate)}
         type="checkbox"
         id="truncate"
         name="truncate results"
-        checked={truncate}
-        disabled={sideCount >= sideTruncCap}
+        checked={truncate || forceTruncate}
+        disabled={forceTruncate}
       />
       <br />
       <br />
@@ -73,17 +69,18 @@ export default function App() {
       <br />
       <code>Generate LETTEGONs!!!!</code>
       <br />
-      <input onChange={(e) => setLetters(e.target.value)} />
+      <input onChange={(e) => setLetters(e.target.value.toUpperCase())} />
       <br />
       <h2>lettegons: {lettegons.length}</h2>
       {truncated && (
         <code>
-          your results were capped to prevent performance lags from trying to
-          calculate an exponentially large number of permutations.
+          your results were{!truncate && " forcefully"} capped to prevent
+          performance lags from trying to calculate an exponentially large
+          number of permutations.
           <br />
           <br />
-          the following represent about {Math.round(resultFraction * 100)}% of
-          valid permutations.
+          the following represent about{" "}
+          {Math.round(resultFraction * 10000) / 100}% of valid permutations.
           <br />
           <br />
         </code>

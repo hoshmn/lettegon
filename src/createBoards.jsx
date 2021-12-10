@@ -3,6 +3,7 @@ let r = 0;
 
 const xEmpty = (x) => x === "_";
 const truncateCap = 1000;
+const globalCap = 10000;
 
 // console.log(makeId(4, 3));
 function makeId(sideCount, sideSize) {
@@ -138,7 +139,10 @@ function createBoards({
     // console.log("___", lettegons)
     lettegons = _.compact(lettegons);
     lettegons = _.flatten(lettegons);
-    if (truncate && lettegons.length > truncateCap) {
+    if (
+      lettegons.length > globalCap ||
+      (truncate && lettegons.length > truncateCap)
+    ) {
       const truncateRatio = Math.ceil(lettegons.length / truncateCap);
       const before = lettegons.length;
       lettegons = lettegons.filter((l, i) => !(i % truncateRatio));
