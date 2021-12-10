@@ -8,12 +8,17 @@ export default function App() {
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
 
+  // TODO make truncation an option
   // const [lettegons, setLettegons] = React.useState([])
-  const boards = createBoards({ letters, sideCount, sideSize });
+  const { lettegons, truncated } = createBoards({
+    letters,
+    sideCount,
+    sideSize
+  });
 
-  console.log("* ", boards);
+  console.log("* ", lettegons);
 
-  const uns = _.uniqBy(boards, "id");
+  const uns = _.uniqBy(lettegons, "id");
   return (
     <div className="App">
       Side count: {sideCount}{" "}
@@ -23,7 +28,7 @@ export default function App() {
         id="sideCount"
         name="side count"
         min="3"
-        max="8"
+        max="5"
         value={sideCount}
       />
       <br />
@@ -34,18 +39,21 @@ export default function App() {
         id="sideSize"
         name="side size"
         min="1"
-        max="6"
+        max="5"
         value={sideSize}
       />
       <br />
+      <br />
       <code>Generate LETTEGONs!!!!</code>
+      <br />
+      {truncated && <span>truncated</span>}
       <br />
       <input onChange={(e) => setLetters(e.target.value)} />
       <h2>
-        boards: {boards.length} ({uns.length})
+        lettegons: {lettegons.length} ({uns.length})
       </h2>
-      {boards.map((b) => (
-        <div style={{ background: b.complete ? "yellow" : "none" }}>
+      {lettegons.map((b) => (
+        <div key={b.id} style={{ background: b.complete ? "yellow" : "none" }}>
           {b.id.replaceAll("|", " . ")}
         </div>
       ))}

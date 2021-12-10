@@ -115,7 +115,8 @@ function createBoards({
   sideCount,
   sideSize,
   lettegons = [],
-  usedLetters = ""
+  usedLetters = "",
+  truncated = false
 }) {
   // let boardMtx = Array(sideCount).fill(Array(sideSize));
   // console.log(boardMtx)
@@ -124,7 +125,7 @@ function createBoards({
   // letters.split("").forEach((l) => {});
   // console.log(boardMtx, r++);
 
-  if (!letters) return lettegons;
+  if (!letters) return { lettegons, truncated };
   const letter = letters[0];
   if (!usedLetters) {
     const L = new Lettegon({ sideCount, sideSize });
@@ -135,6 +136,10 @@ function createBoards({
     // console.log("___", lettegons)
     lettegons = _.compact(lettegons);
     lettegons = _.flatten(lettegons);
+    if (lettegons.length > 500) {
+      lettegons = lettegons.slice(0, 500);
+      truncated = true;
+    }
   }
 
   return memCreateBoards({
@@ -142,6 +147,7 @@ function createBoards({
     sideCount,
     sideSize,
     lettegons,
+    truncated,
     usedLetters: usedLetters + letter
   });
 }
