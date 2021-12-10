@@ -16,8 +16,28 @@ export default function App() {
   const uns = _.uniqBy(boards, "id");
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+      Side count: {sideCount}{" "}
+      <input
+        onChange={(e) => setSideCount(Number(e.target.value))}
+        type="range"
+        id="sideCount"
+        name="side count"
+        min="3"
+        max="8"
+        value={sideCount}
+      />
+      <br />
+      Letters per side: {sideSize}{" "}
+      <input
+        onChange={(e) => setSideSize(Number(e.target.value))}
+        type="range"
+        id="sideSize"
+        name="side size"
+        min="1"
+        max="6"
+        value={sideSize}
+      />
+      <br />
       <code>Generate LETTEGONs!!!!</code>
       <br />
       <input onChange={(e) => setLetters(e.target.value)} />
