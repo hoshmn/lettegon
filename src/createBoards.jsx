@@ -2,6 +2,7 @@ import _ from "lodash";
 let r = 0;
 
 const xEmpty = (x) => x === "_";
+const truncateCap = 1000;
 
 // console.log(makeId(4, 3));
 function makeId(sideCount, sideSize) {
@@ -116,7 +117,8 @@ function createBoards({
   sideSize,
   lettegons = [],
   usedLetters = "",
-  truncated = false
+  truncate = false,
+  resultFraction = 1
 }) {
   // let boardMtx = Array(sideCount).fill(Array(sideSize));
   // console.log(boardMtx)
@@ -125,7 +127,7 @@ function createBoards({
   // letters.split("").forEach((l) => {});
   // console.log(boardMtx, r++);
 
-  if (!letters) return { lettegons, truncated };
+  if (!letters) return { lettegons, resultFraction };
   const letter = letters[0];
   if (!usedLetters) {
     const L = new Lettegon({ sideCount, sideSize });
@@ -136,9 +138,20 @@ function createBoards({
     // console.log("___", lettegons)
     lettegons = _.compact(lettegons);
     lettegons = _.flatten(lettegons);
-    if (lettegons.length > 500) {
-      lettegons = lettegons.slice(0, 500);
-      truncated = true;
+    if (truncate && lettegons.length > truncateCap) {
+      const truncateRatio = Math.ceil(lettegons.length / truncateCap);
+      const before = lettegons.length;
+      lettegons = lettegons.filter((l, i) => !(i % truncateRatio));
+      const fractionKept = lettegons.length / before;
+      console.log(
+        "for '",
+        letter,
+        "' keeping:",
+        Math.round(fractionKept * 100) + "%",
+        before,
+        lettegons.length
+      );
+      resultFraction *= fractionKept;
     }
   }
 
@@ -147,8 +160,9 @@ function createBoards({
     sideCount,
     sideSize,
     lettegons,
-    truncated,
-    usedLetters: usedLetters + letter
+    usedLetters: usedLetters + letter,
+    truncate,
+    resultFraction
   });
 }
 
