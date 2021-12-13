@@ -86,9 +86,10 @@ export default function App() {
           <br />
         </code>
       )}
-      {lettegons.map(({ id, complete }) => (
+      {lettegons.map(({ id, complete }, i) => (
         <Lettegon
           key={id}
+          makePolygon={!i}
           sideCount={sideCount}
           sideSize={sideSize}
           id={id}
