@@ -22,7 +22,7 @@ class Lettegon {
     this.sideCount = sideCount;
     this.sideSize = sideSize;
     this.prevSide = prevSide;
-    this.invalid = false;
+    // this.invalid = false;
 
     // TODO: do we need id AND boardMtx before the edit configuration phase?
     this.id =
@@ -51,8 +51,7 @@ class Lettegon {
   branchByLetter(letter) {
     // the previous side already contains the added letter, board now invalid
     if (this.prevSide >= 0 && this.boardMtx[this.prevSide].includes(letter)) {
-      // console.log(this.id, " is now invalid.");
-      this.invalid = true;
+      // console.log(this.id, " is invalid.");
       return [];
     }
 
@@ -70,14 +69,15 @@ class Lettegon {
 
     // complete boards that don't fit into the above are now invalid
     if (this.complete) {
-      this.invalid = true;
+      // this.invalid = true;
+      // console.log(this.id, " is complete.")
       return [];
     }
 
-    if (this.invalid) {
-      // console.log(this.id, " is invalid.");
-      return [];
-    }
+    // if (this.invalid) {
+    //   // console.log(this.id, " is invalid.");
+    //   return [];
+    // }
 
     // only include one permutation where new letter added to empty side
     let emptySideUsed = false;
@@ -125,9 +125,12 @@ function processLettegons({
   letter,
   usedLetters, // for memoization
   resultFraction,
+  sideCount,
+  sideSize,
   truncate,
   lettegons
 }) {
+  // debugger;
   let pLettegons = _.chain(lettegons)
     .map((L) => L.branchByLetter(letter))
     .flatten(lettegons)
@@ -162,13 +165,18 @@ function processLettegons({
   //   resultFraction,
   //   pLettegons.length
   // );
+  console.log(
+    "PL: ",
+    `${letter}-${usedLetters}-${sideCount}-${sideSize}-${truncate}`
+  );
+  console.log(pLettegons[0], pLettegons.length);
   return { pLettegons, resultFraction };
 }
 
 const memProcessLettegons = _.memoize(processLettegons, (args) => {
   const cacheKey = processLettegonsResolver(args);
   cacheKeyTracker[cacheKey] = true;
-  // console.log("!!!!!", cacheKey, Object.keys(cacheKeyTracker).length);
+  console.log("!!!!!", cacheKey, Object.keys(cacheKeyTracker).length);
   return cacheKey;
 });
 
@@ -193,7 +201,7 @@ function createBoards({ letters, sideCount, sideSize, truncate = false }) {
       lettegons
     });
     lettegons = result.pLettegons;
-    // console.log("__!", lettegons.length);
+    console.log("__!", letter, lettegons.length);
     resultFraction *= result.resultFraction;
 
     usedLetters += letter;
