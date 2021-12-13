@@ -165,18 +165,18 @@ function processLettegons({
   //   resultFraction,
   //   pLettegons.length
   // );
-  console.log(
-    "PL: ",
-    `${letter}-${usedLetters}-${sideCount}-${sideSize}-${truncate}`
-  );
-  console.log(pLettegons[0], pLettegons.length);
+  // console.log(
+  //   "PL: ",
+  //   `${letter}-${usedLetters}-${sideCount}-${sideSize}-${truncate}`
+  // );
+  // console.log(pLettegons[0], pLettegons.length);
   return { pLettegons, resultFraction };
 }
 
 const memProcessLettegons = _.memoize(processLettegons, (args) => {
   const cacheKey = processLettegonsResolver(args);
   cacheKeyTracker[cacheKey] = true;
-  console.log("!!!!!", cacheKey, Object.keys(cacheKeyTracker).length);
+  // console.log("!!!!!", cacheKey, Object.keys(cacheKeyTracker).length);
   return cacheKey;
 });
 
@@ -201,7 +201,7 @@ function createBoards({ letters, sideCount, sideSize, truncate = false }) {
       lettegons
     });
     lettegons = result.pLettegons;
-    console.log("__!", letter, lettegons.length);
+    // console.log("__!", letter, lettegons.length);
     resultFraction *= result.resultFraction;
 
     usedLetters += letter;

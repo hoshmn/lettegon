@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <div className="App">
-      Side count: {sideCount}{" "}
+      <code>Sides / Lettegon: {sideCount} </code>
       <input
         onChange={(e) => setSideCount(Number(e.target.value))}
         type="range"
@@ -37,7 +37,7 @@ export default function App() {
         value={sideCount}
       />
       <br />
-      Letters per side: {sideSize}{" "}
+      <code>Letters per side: {sideSize} </code>
       <input
         onChange={(e) => setSideSize(Number(e.target.value))}
         type="range"
@@ -49,7 +49,7 @@ export default function App() {
       />
       <br />
       <br />
-      Cap results (for performance):{" "}
+      <code>Cap results (for performance): </code>
       <input
         onChange={() => setTruncate(!truncate)}
         type="checkbox"
@@ -60,7 +60,7 @@ export default function App() {
       />
       <br />
       <br />
-      {sideCount * sideSize > 28 && (
+      {sideCount * sideSize > 26 && (
         <strong>
           there aren't enough unique letters in the alphabet to complete a
           lettegon.
@@ -79,17 +79,20 @@ export default function App() {
           number of permutations.
           <br />
           <br />
-          the following represent about{" "}
+          the following represent as little as{" "}
           {Math.round(resultFraction * 10000) / 100}% of valid permutations.
           <br />
           <br />
         </code>
       )}
-      {lettegons.map((b) => (
+      {lettegons.map((b: Object) => (
         <div
           key={b.id}
           style={{
             fontWeight: 100,
+            fontSize: 14,
+            letterSpacing: 1.9,
+            fontFamily: "monospace",
             background: b.complete ? "yellow" : "none"
           }}
         >
