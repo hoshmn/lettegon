@@ -10,6 +10,7 @@ const globalCap = 12000;
 function makeId(sideCount, sideSize) {
   const str = Array(sideCount).fill(Array(sideSize).fill("_"));
   // console.log("STR", str.map(r => r.join("")).join("|"))
+  console.log(boardMatrixToString(str));
   return boardMatrixToString(str);
   // return Array(sideCount).fill(Array(sideSize).fill("_"))
 }
@@ -31,6 +32,7 @@ class Lettegon {
       makeId(sideCount, sideSize);
     this.boardMtx = boardMtx || boardStringToMatrix(this.id);
     this.complete = this.boardMtx.every((s) => s.every(_.negate(xEmpty)));
+    console.log(id, this.id);
   }
 
   cloneWithAddition({ sideIndex, side, letter }) {
@@ -49,6 +51,7 @@ class Lettegon {
   }
 
   branchByLetter(letter) {
+    // console.log("*", letter)
     // the previous side already contains the added letter, board now invalid
     if (this.prevSide >= 0 && this.boardMtx[this.prevSide].includes(letter)) {
       // console.log(this.id, " is invalid.");
@@ -181,6 +184,8 @@ const memProcessLettegons = _.memoize(processLettegons, (args) => {
 });
 
 function createBoards({ letters, sideCount, sideSize, truncate = false }) {
+  if (!letters) return { lettegons: [] };
+
   // initialize L for first letter
   const L = new Lettegon({ sideCount, sideSize });
   let lettegons = L.branchByLetter(letters[0]);

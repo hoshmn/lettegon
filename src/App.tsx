@@ -1,5 +1,6 @@
 import React from "react";
 import createBoards from "./createBoards";
+import Lettegon from "./Lettegon";
 import "./styles.css";
 import _ from "lodash";
 
@@ -14,7 +15,7 @@ export default function App() {
   const forceTruncate = sideCount >= sideTruncCap;
 
   const { lettegons, resultFraction } = createBoards({
-    letters,
+    letters: letters.toUpperCase().replace(/[^A-Z]/g, ""),
     sideCount,
     sideSize,
     truncate: truncate || forceTruncate
@@ -22,7 +23,7 @@ export default function App() {
   const truncated = resultFraction < 1;
 
   // const uns = _.uniqBy(lettegons, "id");
-  // console.log("* ", uns.length === lettegons.length);
+  // console.log("* ", resultFraction, truncated);
 
   return (
     <div className="App">
@@ -69,7 +70,7 @@ export default function App() {
       <br />
       <code>Generate LETTEGONs!!!!</code>
       <br />
-      <input onChange={(e) => setLetters(e.target.value.toUpperCase())} />
+      <input onChange={(e) => setLetters(e.target.value)} />
       <br />
       <h2>lettegons: {lettegons.length}</h2>
       {truncated && (
@@ -85,19 +86,14 @@ export default function App() {
           <br />
         </code>
       )}
-      {lettegons.map((b: Object) => (
-        <div
-          key={b.id}
-          style={{
-            fontWeight: 100,
-            fontSize: 14,
-            letterSpacing: 1.9,
-            fontFamily: "monospace",
-            background: b.complete ? "yellow" : "none"
-          }}
-        >
-          {b.id.replaceAll("|", " . ")}
-        </div>
+      {lettegons.map(({ id, complete }) => (
+        <Lettegon
+          key={id}
+          sideCount={sideCount}
+          sideSize={sideSize}
+          id={id}
+          complete={complete}
+        />
       ))}
     </div>
   );
