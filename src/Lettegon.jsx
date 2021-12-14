@@ -43,8 +43,11 @@ export default function Lettegon({
   complete,
   sideCount,
   sideSize,
-  letters
+  letters,
+  editMode,
+  setSelectedLettegon
 }) {
+  const [config, setConfig] = React.useState(id);
   const letterCoords = {};
 
   const radius = 50 + (sideCount - 2) * 10 + (sideSize - 1) * 20;
@@ -68,7 +71,7 @@ export default function Lettegon({
         fill="none"
         strokeWidth="1.8"
       >
-        <polygon points={points} />
+        <polygon fill="#f0fffc" points={points} />
         {Lines}
         {Letters}
       </svg>
@@ -77,7 +80,7 @@ export default function Lettegon({
 
   const generateLetters = (points) => {
     return points.map(([x1, y1], vtxIdx) => {
-      const letters = id.split("|")[vtxIdx].split("");
+      const letters = config.split("|")[vtxIdx].split("");
       // console.log(letters);
       const nextPtIdx = (vtxIdx + 1) % points.length;
       const [x2, y2] = points[nextPtIdx];
@@ -138,29 +141,57 @@ export default function Lettegon({
     });
   };
 
+  const getEditTools = () => {
+    if (!editMode) return null;
+
+    const sideArray = config.split("|");
+    const shuffleable = sideArray[0].length > 1;
+    return (
+      <>
+        {shuffleable &&
+          sideArray.map((side, i) => {
+            // console.log(letters,)
+            return (
+              <>
+                {side} <button>shuffle</button>
+                <br />
+              </>
+            );
+          })}
+      </>
+    );
+  };
+
+  const handleSelect = () => {
+    if (!complete || editMode) return;
+
+    setSelectedLettegon(id);
+  };
+
   const { ref, inView, entry } = useInView({
     /* Optional options */
     threshold: 0
   });
-
   return (
     <div
       ref={ref}
+      onClick={handleSelect}
       style={{
-        display: "inline-block",
+        flexBasis: 350,
+        flexGrow: 1,
+        maxWidth: 600,
         fontWeight: 100,
-        // fontSize: {fontSize},
         fontSize: 18,
-        maxWidth: "600px",
-        minWidth: "400px",
         margin: "auto",
-        // letterSpacing: 4,
         fontFamily: "monospace",
-        background: complete ? "yellow" : "none"
+        background: complete ? "#f8dd2a82" : "none"
       }}
     >
       {inView ? (
-        generatePolygon()
+        <>
+          {generatePolygon()}
+          {getEditTools()}
+        </>
       ) : (
         <div
           style={{

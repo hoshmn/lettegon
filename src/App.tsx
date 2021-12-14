@@ -12,6 +12,7 @@ export default function App() {
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
   const [truncate, setTruncate] = React.useState(false);
+  const [selectedLettegon, setSelectedLettegon] = React.useState(null);
 
   const forceTruncate = sideCount >= sideTruncCap;
 
@@ -24,7 +25,7 @@ export default function App() {
   const truncated = resultFraction < 1;
 
   // const uns = _.uniqBy(lettegons, "id");
-  console.log("* ", lettegons, truncated);
+  // console.log("* ", lettegons, truncated);
 
   const getResultsCount = () => {
     // TODO style (mui icon?)
@@ -101,17 +102,40 @@ The following represent as little as ${
       />
       <br />
       {getResultsCount()}
-
-      {lettegons.map(({ id, complete }, i) => (
-        <Lettegon
-          key={id}
-          letters={letters}
-          sideCount={sideCount}
-          sideSize={sideSize}
-          id={id}
-          complete={complete}
-        />
-      ))}
+      {!selectedLettegon ? (
+        <div
+          className="results"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            paddingTop: 32
+          }}
+        >
+          {lettegons.map(({ id, complete }, i) => (
+            <Lettegon
+              key={id}
+              setSelectedLettegon={setSelectedLettegon}
+              letters={letters}
+              sideCount={sideCount}
+              sideSize={sideSize}
+              id={id}
+              complete={complete}
+            />
+          ))}
+        </div>
+      ) : (
+        <div>
+          <Lettegon
+            // setSelectedLettegon={setSelectedLettegon}
+            editMode={true}
+            letters={letters}
+            sideCount={sideCount}
+            sideSize={sideSize}
+            id={selectedLettegon}
+            complete={true}
+          />
+        </div>
+      )}
     </div>
   );
 }

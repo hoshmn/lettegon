@@ -5,8 +5,8 @@ const cacheKeyTracker = {};
 const xEmpty = (x) => x === "_";
 // const truncateCap = 1000;
 // const globalCap = 12000;
-const truncateCap = 100;
-const globalCap = 200;
+const truncateCap = 1000;
+const globalCap = 12000;
 
 // console.log(makeId(4, 3));
 function makeId(sideCount, sideSize) {
