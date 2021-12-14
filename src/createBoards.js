@@ -52,24 +52,36 @@ class Lettegon {
     });
   }
 
+  cloneReturnToLetter({ containingSide }) {
+    return new Lettegon({
+      sideCount: this.sideCount,
+      sideSize: this.sideSize,
+      id: this.id,
+      // boardMtx: newMtx,
+      prevSide: containingSide
+    });
+  }
+
   branchByLetter(letter) {
     // console.log("*", letter)
     // the previous side already contains the added letter, board now invalid
+    debugger;
     if (this.prevSide >= 0 && this.boardMtx[this.prevSide].includes(letter)) {
       // console.log(this.id, " is invalid.");
       return [];
     }
 
     // letter contained by some other side, board valid just update prevSide
+    let containingSide = null;
     if (
       this.boardMtx.some((s, i) => {
         const included = s.includes(letter);
-        if (included) this.prevSide = i;
+        if (included) containingSide = i;
         return included;
       })
     ) {
       // console.log(this.id, " contained letter already.");
-      return [this];
+      return [this.cloneReturnToLetter({ containingSide })];
     }
 
     // complete boards that don't fit into the above are now invalid

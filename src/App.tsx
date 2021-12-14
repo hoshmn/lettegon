@@ -2,7 +2,7 @@ import React from "react";
 import createBoards from "./createBoards";
 import Lettegon from "./Lettegon";
 import "./styles.css";
-import _ from "lodash";
+// import _ from "lodash";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
@@ -24,7 +24,7 @@ export default function App() {
   const truncated = resultFraction < 1;
 
   // const uns = _.uniqBy(lettegons, "id");
-  // console.log("* ", resultFraction, truncated);
+  console.log("* ", lettegons, truncated);
 
   const getResultsCount = () => {
     // TODO style (mui icon?)

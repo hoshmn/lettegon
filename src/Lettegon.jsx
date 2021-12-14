@@ -124,6 +124,9 @@ export default function Lettegon({
       // console.log("**", ltrCoords, nextCoords)
       return (
         <line
+          style={{
+            animationDelay: `${ltrIdx * 0.08}s`
+          }}
           x1={x1}
           y1={y1}
           x2={x2}
