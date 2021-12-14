@@ -25,6 +25,19 @@ export default function App() {
   // const uns = _.uniqBy(lettegons, "id");
   // console.log("* ", resultFraction, truncated);
 
+  const getCapped = () => {
+    // TODO style (mui icon?)
+    if (!truncated) return null;
+    const text = `Your results were${
+      !truncate ? " forcefully" : ""
+    } capped to prevent performance lags from trying to calculate an exponentially large number of permutations.
+
+The following represent as little as ${
+      Math.round(resultFraction * 10000) / 100
+    }% of valid permutations.`;
+    return <em title={text}>(capped)</em>;
+  };
+
   return (
     <div className="App">
       <code>Sides / Lettegon: {sideCount} </code>
@@ -68,28 +81,17 @@ export default function App() {
         </strong>
       )}
       <br />
-      <code>Generate LETTEGONs!!!!</code>
+      <code>Generate LETTEGONs!</code>
       <br />
       <input onChange={(e) => setLetters(e.target.value)} />
       <br />
-      <h2>lettegons: {lettegons.length}</h2>
-      {truncated && (
-        <code>
-          your results were{!truncate && " forcefully"} capped to prevent
-          performance lags from trying to calculate an exponentially large
-          number of permutations.
-          <br />
-          <br />
-          the following represent as little as{" "}
-          {Math.round(resultFraction * 10000) / 100}% of valid permutations.
-          <br />
-          <br />
-        </code>
-      )}
+      <code>
+        {lettegons.length} results {getCapped()}
+        <br />
+      </code>
       {lettegons.map(({ id, complete }, i) => (
         <Lettegon
           key={id}
-          makePolygon={!i}
           sideCount={sideCount}
           sideSize={sideSize}
           id={id}

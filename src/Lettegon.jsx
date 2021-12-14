@@ -1,5 +1,6 @@
 import React from "react";
-import _ from "lodash";
+import { useInView } from "react-intersection-observer";
+// import _ from "lodash";
 
 // const fontSize = 10;
 
@@ -37,35 +38,37 @@ function interpolate([v1, v2], ratio) {
   return v1 + (v2 - v1) * ratio;
 }
 
-export default function Lettegon({
-  id,
-  complete,
-  sideCount,
-  sideSize,
-  makePolygon
-}) {
-  if (!makePolygon) {
-    return (
-      <div
-        style={{
-          fontWeight: 100,
-          fontSize: 20,
-          // width: "200px",
-          letterSpacing: 4,
-          fontFamily: "monospace",
-          background: complete ? "yellow" : "none"
-        }}
-      >
-        {id.replaceAll("|", " . ")}
-      </div>
-    );
-  }
+export default function Lettegon({ id, complete, sideCount, sideSize }) {
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
+    threshold: 0
+  });
 
+  // console.log(entry)
+  // if (!inView) {
+  //   return (
+  //     <div
+  //       ref={ref}
+  //       style={{
+  //         fontWeight: 100,
+  //         fontSize: 20,
+  //         // width: "200px",
+  //         letterSpacing: 4,
+  //         fontFamily: "monospace",
+  //         background: complete ? "yellow" : "none"
+  //       }}
+  //     >
+  //       {id.replaceAll("|", " . ")}
+  //     </div>
+  //   );
+  // }
+
+  const radius = 50 + (sideCount - 2) * 10 + (sideSize - 1) * 20;
+  // console.log(radius);
   // console.log(id)
+
   // thanks to https://codepen.io/winkerVSbecks/pen/wrZQQm
   const generatePolygon = () => {
-    const radius = 50 + (sideCount - 2) * 10 + (sideSize - 1) * 20;
-
     const s = 2 * radius + 50;
     // const res = polygon([0, 0], sideCount, radius);
     const points = polygon([s / 2, s / 2], sideCount, radius);
@@ -110,17 +113,35 @@ export default function Lettegon({
 
   return (
     <div
+      ref={ref}
       style={{
+        display: "inline-block",
         fontWeight: 100,
         // fontSize: {fontSize},
         fontSize: 18,
-        // width: "200px",
+        maxWidth: "600px",
+        minWidth: "400px",
+        margin: "auto",
         // letterSpacing: 4,
         fontFamily: "monospace",
         background: complete ? "yellow" : "none"
       }}
     >
-      {generatePolygon()}
+      {inView ? (
+        generatePolygon()
+      ) : (
+        <div
+          style={{
+            // pushes raw id out of view and also gives it a height
+            // equal to its width (like the svgs) so scroll position
+            // is accurately estimated
+            paddingTop: "100%"
+          }}
+        >
+          {/* TODO: mui spinner? */}
+          {id.replaceAll("|", " . ")}
+        </div>
+      )}
     </div>
   );
 }
