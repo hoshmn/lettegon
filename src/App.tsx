@@ -5,6 +5,7 @@ import "./styles.css";
 import _ from "lodash";
 
 const sideTruncCap = 6;
+const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
 
 export default function App() {
   const [letters, setLetters] = React.useState("");
@@ -15,7 +16,7 @@ export default function App() {
   const forceTruncate = sideCount >= sideTruncCap;
 
   const { lettegons, resultFraction } = createBoards({
-    letters: letters.toUpperCase().replace(/[^A-Z]/g, ""),
+    letters,
     sideCount,
     sideSize,
     truncate: truncate || forceTruncate
@@ -25,17 +26,25 @@ export default function App() {
   // const uns = _.uniqBy(lettegons, "id");
   // console.log("* ", resultFraction, truncated);
 
-  const getCapped = () => {
+  const getResultsCount = () => {
     // TODO style (mui icon?)
-    if (!truncated) return null;
-    const text = `Your results were${
-      !truncate ? " forcefully" : ""
-    } capped to prevent performance lags from trying to calculate an exponentially large number of permutations.
+    const text =
+      truncated &&
+      `Your results were${
+        !truncate ? " forcefully" : ""
+      } capped to prevent performance lags from trying to calculate an exponentially large number of permutations.
 
 The following represent as little as ${
-      Math.round(resultFraction * 10000) / 100
-    }% of valid permutations.`;
-    return <em title={text}>(capped)</em>;
+        Math.round(resultFraction * 10000) / 100
+      }% of valid permutations.`;
+
+    return (
+      <code>
+        {lettegons.length} {truncated ? "capped" : ""} results{" "}
+        {truncated ? <em title={text}>(?)</em> : ""}
+        <br />
+      </code>
+    );
   };
 
   return (
@@ -63,6 +72,14 @@ The following represent as little as ${
       />
       <br />
       <br />
+      {sideCount * sideSize > 26 && (
+        <code>
+          Note: there aren't enough unique letters in the alphabet to fill a
+          Lettegon with {sideCount} sides and {sideSize} letters per side...
+          <br />
+          <br />
+        </code>
+      )}
       <code>Cap results (for performance): </code>
       <input
         onChange={() => setTruncate(!truncate)}
@@ -71,27 +88,24 @@ The following represent as little as ${
         name="truncate results"
         checked={truncate || forceTruncate}
         disabled={forceTruncate}
+        title={forceTruncate && forceTruncateTitle}
       />
       <br />
       <br />
-      {sideCount * sideSize > 26 && (
-        <strong>
-          there aren't enough unique letters in the alphabet to complete a
-          lettegon.
-        </strong>
-      )}
-      <br />
       <code>Generate LETTEGONs!</code>
       <br />
-      <input onChange={(e) => setLetters(e.target.value)} />
+      <input
+        onChange={(e) =>
+          setLetters(e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))
+        }
+      />
       <br />
-      <code>
-        {lettegons.length} results {getCapped()}
-        <br />
-      </code>
+      {getResultsCount()}
+
       {lettegons.map(({ id, complete }, i) => (
         <Lettegon
           key={id}
+          letters={letters}
           sideCount={sideCount}
           sideSize={sideSize}
           id={id}

@@ -12,7 +12,7 @@ const globalCap = 200;
 function makeId(sideCount, sideSize) {
   const str = Array(sideCount).fill(Array(sideSize).fill("_"));
   // console.log("STR", str.map(r => r.join("")).join("|"))
-  console.log(boardMatrixToString(str));
+  // console.log(boardMatrixToString(str));
   return boardMatrixToString(str);
   // return Array(sideCount).fill(Array(sideSize).fill("_"))
 }
@@ -34,7 +34,7 @@ class Lettegon {
       makeId(sideCount, sideSize);
     this.boardMtx = boardMtx || boardStringToMatrix(this.id);
     this.complete = this.boardMtx.every((s) => s.every(_.negate(xEmpty)));
-    console.log(id, this.id);
+    // console.log(id, this.id);
   }
 
   cloneWithAddition({ sideIndex, side, letter }) {
