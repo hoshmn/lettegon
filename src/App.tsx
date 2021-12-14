@@ -1,6 +1,7 @@
 import React from "react";
 import createBoards from "./createBoards";
 import Lettegon from "./Lettegon";
+import Modal from "@mui/material/Modal";
 import "./styles.css";
 // import _ from "lodash";
 
@@ -8,11 +9,17 @@ const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
 
 export default function App() {
-  const [letters, setLetters] = React.useState("");
+  const [letters, setLetters] = React.useState(
+    // "ABCDEFGHIJKL"
+    ""
+  );
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
   const [truncate, setTruncate] = React.useState(false);
-  const [selectedLettegon, setSelectedLettegon] = React.useState(null);
+  const [selectedLettegon, setSelectedLettegon] = React.useState(
+    // "ACE|BDF|GIK|HJL"
+    null
+  );
 
   const forceTruncate = sideCount >= sideTruncCap;
 
@@ -89,7 +96,7 @@ The following represent as little as ${
         name="truncate results"
         checked={truncate || forceTruncate}
         disabled={forceTruncate}
-        title={forceTruncate && forceTruncateTitle}
+        title={forceTruncate ? forceTruncateTitle : ""}
       />
       <br />
       <br />
@@ -124,7 +131,19 @@ The following represent as little as ${
           ))}
         </div>
       ) : (
-        <div>
+        <Modal
+          open={true}
+          sx={{
+            p: "12px",
+            pb: "24px",
+            background: "#ffffffcc",
+            "& .lettegon": {
+              overflow: "auto",
+              maxHeight: "calc(100vh - 36px)"
+            }
+          }}
+          onBackdropClick={() => setSelectedLettegon(null)}
+        >
           <Lettegon
             // setSelectedLettegon={setSelectedLettegon}
             editMode={true}
@@ -134,7 +153,7 @@ The following represent as little as ${
             id={selectedLettegon}
             complete={true}
           />
-        </div>
+        </Modal>
       )}
     </div>
   );

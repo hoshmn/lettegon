@@ -65,7 +65,7 @@ class Lettegon {
   branchByLetter(letter) {
     // console.log("*", letter)
     // the previous side already contains the added letter, board now invalid
-    debugger;
+    // debugger;
     if (this.prevSide >= 0 && this.boardMtx[this.prevSide].includes(letter)) {
       // console.log(this.id, " is invalid.");
       return [];

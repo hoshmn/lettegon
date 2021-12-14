@@ -1,6 +1,7 @@
+import { Box, Button, Link } from "@mui/material";
 import React from "react";
 import { useInView } from "react-intersection-observer";
-// import _ from "lodash";
+import _ from "lodash";
 
 // const fontSize = 10;
 
@@ -128,7 +129,7 @@ export default function Lettegon({
       return (
         <line
           style={{
-            animationDelay: `${ltrIdx * 0.08}s`
+            animationDelay: `${ltrIdx * 0.1}s`
           }}
           x1={x1}
           y1={y1}
@@ -143,23 +144,52 @@ export default function Lettegon({
 
   const getEditTools = () => {
     if (!editMode) return null;
-
+    // console.log(config);
     const sideArray = config.split("|");
     const shuffleable = sideArray[0].length > 1;
+
+    const shuffle = (sideIdx) => {
+      let newSideArray = [...sideArray];
+
+      if (sideIdx === null) {
+        while (_.isEqual(newSideArray, sideArray)) {
+          newSideArray = _.shuffle(newSideArray);
+        }
+        setConfig(newSideArray.join("|"));
+        return;
+      }
+
+      const side = newSideArray[sideIdx];
+      let newSide = side;
+      while (newSide === side) {
+        newSide = _.shuffle(side.split("")).join("");
+      }
+      newSideArray[sideIdx] = newSide;
+      setConfig(newSideArray.join("|"));
+    };
+
     return (
-      <>
-        {shuffleable &&
-          sideArray.map((side, i) => {
-            // console.log(letters,)
-            return (
-              <>
-                {side} <button>shuffle</button>
-                <br />
-              </>
-            );
-          })}
-      </>
+      <Box sx={{ m: 3, mb: 0 }}>
+        Shuffle:
+        <Box display="flex">
+          <Button onClick={() => shuffle(null)}>Sides</Button>
+          {shuffleable &&
+            sideArray.map((side, i) => {
+              // console.log(letters,)
+              return (
+                <Button key={i} onClick={() => shuffle(i)}>
+                  {side}
+                </Button>
+              );
+            })}
+        </Box>
+      </Box>
     );
+  };
+
+  const getShareableLink = () => {
+    if (!editMode) return null;
+    return <Link>click here to play this lettegon</Link>;
   };
 
   const handleSelect = () => {
@@ -168,13 +198,14 @@ export default function Lettegon({
     setSelectedLettegon(id);
   };
 
-  const { ref, inView, entry } = useInView({
+  const { ref, inView } = useInView({
     /* Optional options */
     threshold: 0
   });
   return (
     <div
       ref={ref}
+      className="lettegon"
       onClick={handleSelect}
       style={{
         flexBasis: 350,
@@ -189,8 +220,9 @@ export default function Lettegon({
     >
       {inView ? (
         <>
-          {generatePolygon()}
           {getEditTools()}
+          {generatePolygon()}
+          {getShareableLink()}
         </>
       ) : (
         <div
