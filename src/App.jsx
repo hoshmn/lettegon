@@ -144,16 +144,17 @@ The following represent as little as ${
           }}
           onBackdropClick={() => setSelectedLettegon(null)}
         >
-        <div>
-          <Lettegon
-            // setSelectedLettegon={setSelectedLettegon}
-            editMode={true}
-            letters={letters}
-            sideCount={sideCount}
-            sideSize={sideSize}
-            id={selectedLettegon}
-            complete={true}
-          />
+        {/* div for Modal to attach ref to, display contents to not interfere w/outside click */}
+          <div style={{ display: "contents" }}>
+            <Lettegon
+              // setSelectedLettegon={setSelectedLettegon}
+              editMode={true}
+              letters={letters}
+              sideCount={sideCount}
+              sideSize={sideSize}
+              id={selectedLettegon}
+              complete={true}
+            />
           </div>
         </Modal>
       {/* )} */}
