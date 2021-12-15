@@ -109,7 +109,7 @@ The following represent as little as ${
       />
       <br />
       {getResultsCount()}
-      {!selectedLettegon ? (
+      {/* {!selectedLettegon ? ( */}
         <div
           className="results"
           style={{
@@ -130,13 +130,13 @@ The following represent as little as ${
             />
           ))}
         </div>
-      ) : (
+      {/* ) : ( */}
         <Modal
-          open={true}
+          open={!!selectedLettegon}
           sx={{
             p: "12px",
             pb: "24px",
-            background: "#ffffffcc",
+            background: "none",
             "& .lettegon": {
               overflow: "auto",
               maxHeight: "calc(100vh - 36px)"
@@ -144,6 +144,7 @@ The following represent as little as ${
           }}
           onBackdropClick={() => setSelectedLettegon(null)}
         >
+        <div>
           <Lettegon
             // setSelectedLettegon={setSelectedLettegon}
             editMode={true}
@@ -153,8 +154,9 @@ The following represent as little as ${
             id={selectedLettegon}
             complete={true}
           />
+          </div>
         </Modal>
-      )}
+      {/* )} */}
     </div>
   );
 }

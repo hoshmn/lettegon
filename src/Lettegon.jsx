@@ -96,10 +96,9 @@ export default function Lettegon({
         const offset = 5.5;
         letterCoords[letter] = { x, y };
         return (
-          <>
-            <circle key={"c" + letter} cx={x} cy={y} r={10} fill="white" />
+          <g key={letter}>
+            <circle cx={x} cy={y} r={10} fill="white" />
             <text
-              key={letter}
               x={x - offset}
               y={y + offset}
               stroke="none"
@@ -108,7 +107,7 @@ export default function Lettegon({
             >
               {letter}
             </text>
-          </>
+          </g>
         );
       });
     });
@@ -128,6 +127,7 @@ export default function Lettegon({
       // console.log("**", ltrCoords, nextCoords)
       return (
         <line
+          key={"letter-"+ltrIdx}
           style={{
             animationDelay: `${ltrIdx * 0.1}s`
           }}
@@ -171,8 +171,8 @@ export default function Lettegon({
     return (
       <Box sx={{ m: 3, mb: 0 }}>
         Shuffle:
+        <Button onClick={() => shuffle(null)}>Sides</Button>
         <Box display="flex">
-          <Button onClick={() => shuffle(null)}>Sides</Button>
           {shuffleable &&
             sideArray.map((side, i) => {
               // console.log(letters,)
@@ -202,10 +202,19 @@ export default function Lettegon({
     /* Optional options */
     threshold: 0
   });
+  // const [toRender, setToRender] = React.useState(false);
+  // React.useEffect(() => {
+  //   // if (inView) setToRender(inView);
+  //   setTimeout(() => {
+  //     setToRender(inView);
+  //   }, inView ? 0 : 1000);
+  // }, [inView]);
+
   return (
     <div
-      ref={ref}
+      ref={editMode ? null: ref}
       className="lettegon"
+      key={config}
       onClick={handleSelect}
       style={{
         flexBasis: 350,
@@ -215,10 +224,10 @@ export default function Lettegon({
         fontSize: 18,
         margin: "auto",
         fontFamily: "monospace",
-        background: complete ? "#f8dd2a82" : "none"
+        background: complete ? "rgb(255 238 184)" : "none"
       }}
     >
-      {inView ? (
+      {inView || editMode ? (
         <>
           {getEditTools()}
           {generatePolygon()}

@@ -47,6 +47,7 @@ PLAY MODE
 
 tech to incorporate:
 Ruby, db, \_ (memoize af),
+next? https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql
 svg help: https://stackoverflow.com/questions/30120898/working-with-svg-polygon-defined-by-user
 checking words: https://github.com/dwyl/english-words
 filter by ~12 letters used: https://nedbatchelder.com/blog/202004/letter_boxed.html#comment_16151
