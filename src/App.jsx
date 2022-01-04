@@ -3,16 +3,19 @@ import createBoards from "./createBoards";
 import Lettegon from "./Lettegon";
 import Modal from "@mui/material/Modal";
 import "./styles.css";
+import { IconButton, Input, InputAdornment, TextField } from "@mui/material";
 // import _ from "lodash";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
 
 export default function App() {
+  const [mode, setMode] = React.useState("generate"); // "selection", "edit"
   const [letters, setLetters] = React.useState(
     // "ABCDEFGHIJKL"
     ""
   );
+  const [words, setWords] = React.useState([]);
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
   const [truncate, setTruncate] = React.useState(true);
@@ -21,15 +24,23 @@ export default function App() {
     null
   );
 
+  const textInputRef = React.createRef();
+
   const forceTruncate = sideCount >= sideTruncCap;
 
+  const allLetters = [...words, letters]
+    .map((w, i) => (i ? w.slice(1) : w))
+    .join("");
+  // console.log(letters, "allLetters", allLetters);
   const { lettegons, resultFraction } = createBoards({
-    letters,
+    letters: allLetters,
     sideCount,
     sideSize,
     truncate: truncate || forceTruncate,
   });
   const truncated = resultFraction < 1;
+  const completed = lettegons.length && lettegons[0].complete;
+  console.log("?+", completed)
 
   // const uns = _.uniqBy(lettegons, "id");
   // console.log("* ", lettegons, truncated);
@@ -53,6 +64,32 @@ The following represent as little as ${
         <br />
       </code>
     );
+  };
+
+  const addWord = () => {
+    const isWordValid = letters.length > 2;
+    if (!isWordValid) return null;
+
+    setWords([...words, letters]);
+    setLetters(letters.slice(-1));
+    textInputRef.current.focus();
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.code.toLowerCase() === "enter") addWord();
+  };
+
+  const updateLetters = (e) => {
+    let newLetters = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
+    if (!newLetters && words.length) {
+      newLetters = words[words.length - 1];
+      const newWords = words.slice(0, -1);
+      setWords(newWords);
+    } else if (letters.length && !newLetters.startsWith(letters[0])) {
+      // prevent tampering with first letter through selection overwrite
+      return;
+    }
+    setLetters(newLetters);
   };
 
   return (
@@ -102,11 +139,35 @@ The following represent as little as ${
       <br />
       <code>Generate LETTEGONs!</code>
       <br />
-      <input
+      {words.join(", ")}
+      <br />
+      {/* <input
         onChange={(e) =>
           setLetters(e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))
         }
+      /> */}
+      <TextField
+        inputRef={textInputRef}
+        autoFocus={true}
+        variant="standard"
+        value={letters}
+        onChange={updateLetters}
+        onKeyPress={handleKeyPress}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="add word"
+                onClick={addWord}
+                edge="end"
+              >
+                {completed ? "✓" : "+"}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
+
       <br />
       {getResultsCount()}
       {/* {!selectedLettegon ? ( */}
@@ -122,7 +183,7 @@ The following represent as little as ${
           <Lettegon
             key={id}
             setSelectedLettegon={setSelectedLettegon}
-            letters={letters}
+            letters={allLetters}
             sideCount={sideCount}
             sideSize={sideSize}
             id={id}
@@ -149,7 +210,7 @@ The following represent as little as ${
           <Lettegon
             // setSelectedLettegon={setSelectedLettegon}
             editMode={true}
-            letters={letters}
+            letters={allLetters}
             sideCount={sideCount}
             sideSize={sideSize}
             id={selectedLettegon}
