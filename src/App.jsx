@@ -3,8 +3,8 @@ import createBoards from "./createBoards";
 import Lettegon from "./Lettegon";
 import Modal from "@mui/material/Modal";
 import "./styles.css";
-import { IconButton, Input, InputAdornment, TextField } from "@mui/material";
-// import _ from "lodash";
+import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import _ from "lodash";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
@@ -39,8 +39,8 @@ export default function App() {
     truncate: truncate || forceTruncate,
   });
   const truncated = resultFraction < 1;
-  const completed = lettegons.length && lettegons[0].complete;
-  console.log("?+", completed)
+  const isCompleted = lettegons.length && lettegons[0].complete;
+  // console.log("?+", isCompleted)
 
   // const uns = _.uniqBy(lettegons, "id");
   // console.log("* ", lettegons, truncated);
@@ -67,12 +67,18 @@ The following represent as little as ${
   };
 
   const addWord = () => {
-    const isWordValid = letters.length > 2;
+    // TODO: add dictionary
+    const isWordValid = letters.length >= 2;
     if (!isWordValid) return null;
 
     setWords([...words, letters]);
-    setLetters(letters.slice(-1));
-    textInputRef.current.focus();
+    if (isCompleted) {
+      setLetters("");
+      setMode("selection");
+    } else {
+      setLetters(letters.slice(-1));
+      textInputRef.current.focus();
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -85,13 +91,20 @@ The following represent as little as ${
       newLetters = words[words.length - 1];
       const newWords = words.slice(0, -1);
       setWords(newWords);
-    } else if (letters.length && !newLetters.startsWith(letters[0])) {
+    } else if (words.length && letters.length && !newLetters.startsWith(letters[0])) {
       // prevent tampering with first letter through selection overwrite
       return;
     }
     setLetters(newLetters);
   };
 
+  const resumeEditing = () => {
+    const lastWord = words[words.length - 1];
+    setLetters(lastWord);
+    setWords(words.slice(0, -1));
+    setMode("generate");
+  }
+  
   return (
     <div className="App">
       <code>Sides / Lettegon: {sideCount} </code>
@@ -140,37 +153,39 @@ The following represent as little as ${
       <code>Generate LETTEGONs!</code>
       <br />
       {words.join(", ")}
+      {mode !== "generate" && (
+        <Button onClick={resumeEditing}>Edit</Button>
+      )}
       <br />
       {/* <input
         onChange={(e) =>
           setLetters(e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))
         }
       /> */}
-      <TextField
-        inputRef={textInputRef}
-        autoFocus={true}
-        variant="standard"
-        value={letters}
-        onChange={updateLetters}
-        onKeyPress={handleKeyPress}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="add word"
-                onClick={addWord}
-                edge="end"
-              >
-                {completed ? "✓" : "+"}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      {mode !== "generate" ? null : (
+        <TextField
+          inputRef={textInputRef}
+          autoFocus={true}
+          variant="standard"
+          value={letters}
+          onChange={updateLetters}
+          onKeyPress={handleKeyPress}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton aria-label="add word" onClick={addWord} edge="end">
+                  {isCompleted ? "✓" : "+"}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
 
       <br />
       {getResultsCount()}
-      {/* {!selectedLettegon ? ( */}
+      <br />
+      {mode === "selection" ? "Click to configure and play" : null}
       <div
         className="results"
         style={{
@@ -182,7 +197,7 @@ The following represent as little as ${
         {lettegons.map(({ id, complete }, i) => (
           <Lettegon
             key={id}
-            setSelectedLettegon={setSelectedLettegon}
+            setSelectedLettegon={mode !== "selection" ? _.noop : setSelectedLettegon}
             letters={allLetters}
             sideCount={sideCount}
             sideSize={sideSize}
