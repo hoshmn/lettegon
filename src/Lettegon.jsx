@@ -14,7 +14,7 @@ function pts(sideCount, radius) {
   return vertexIndices.map((index) => {
     return {
       theta: offset + degreesToRadians(angle * index),
-      r: radius
+      r: radius,
     };
   });
 }
@@ -30,7 +30,7 @@ function degreesToRadians(angleInDegrees) {
 function polygon([cx, cy], sideCount, radius) {
   return pts(sideCount, radius).map(({ r, theta }) => [
     cx + r * Math.cos(theta),
-    cy + r * Math.sin(theta)
+    cy + r * Math.sin(theta),
   ]);
   // .join(" ");
 }
@@ -46,7 +46,7 @@ export default function Lettegon({
   sideSize,
   letters,
   editMode,
-  setSelectedLettegon
+  setSelectedLettegon,
 }) {
   const [config, setConfig] = React.useState(id);
   const letterCoords = {};
@@ -127,9 +127,9 @@ export default function Lettegon({
       // console.log("**", ltrCoords, nextCoords)
       return (
         <line
-          key={"letter-"+ltrIdx}
+          key={"letter-" + ltrIdx}
           style={{
-            animationDelay: `${ltrIdx * 0.1}s`
+            animationDelay: `${ltrIdx * 0.1}s`,
           }}
           x1={x1}
           y1={y1}
@@ -200,7 +200,7 @@ export default function Lettegon({
 
   const { ref, inView } = useInView({
     /* Optional options */
-    threshold: 0
+    threshold: 0,
   });
   // const [toRender, setToRender] = React.useState(false);
   // React.useEffect(() => {
@@ -212,7 +212,7 @@ export default function Lettegon({
 
   return (
     <div
-      ref={editMode ? null: ref}
+      ref={editMode ? null : ref}
       className="lettegon"
       key={config}
       onClick={handleSelect}
@@ -224,7 +224,7 @@ export default function Lettegon({
         fontSize: 18,
         margin: "auto",
         fontFamily: "monospace",
-        background: complete ? "rgb(255 238 184)" : "none"
+        background: complete ? "rgb(255 238 184)" : "none",
       }}
     >
       {inView || editMode ? (
@@ -239,7 +239,7 @@ export default function Lettegon({
             // pushes raw id out of view and also gives it a height
             // equal to its width (like the svgs) so scroll position
             // is accurately estimated
-            paddingTop: "100%"
+            paddingTop: "100%",
           }}
         >
           {/* TODO: mui spinner? */}

@@ -1,12 +1,12 @@
 import _ from "lodash";
-let r = 0;
+// let r = 0;
 const cacheKeyTracker = {};
 
 const xEmpty = (x) => x === "_";
 // const truncateCap = 1000;
 // const globalCap = 12000;
-const truncateCap = 1000;
-const globalCap = 12000;
+const truncateCap = 100;
+const globalCap = 1000;
 
 // console.log(makeId(4, 3));
 function makeId(sideCount, sideSize) {
@@ -48,7 +48,7 @@ class Lettegon {
       sideSize: this.sideSize,
       // id: this.id,
       boardMtx: newMtx,
-      prevSide: sideIndex
+      prevSide: sideIndex,
     });
   }
 
@@ -58,7 +58,7 @@ class Lettegon {
       sideSize: this.sideSize,
       id: this.id,
       // boardMtx: newMtx,
-      prevSide: containingSide
+      prevSide: containingSide,
     });
   }
 
@@ -114,7 +114,7 @@ class Lettegon {
             this.cloneWithAddition({
               side,
               sideIndex,
-              letter
+              letter,
             })
           );
         }
@@ -132,7 +132,7 @@ const processLettegonsResolver = ({
   usedLetters,
   truncate,
   sideCount,
-  sideSize
+  sideSize,
 }) => `${letter}-${usedLetters}-${sideCount}-${sideSize}-${truncate}`;
 
 // NOTE: if adding inputs that determine the shape of the output,
@@ -142,15 +142,14 @@ function processLettegons({
   letter,
   usedLetters, // for memoization
   resultFraction,
-  sideCount,
-  sideSize,
+  sideCount, // for memoization
+  sideSize, // for memoization
   truncate,
-  lettegons
+  lettegons,
 }) {
-  // debugger;
   let pLettegons = _.chain(lettegons)
     .map((L) => L.branchByLetter(letter))
-    .flatten(lettegons)
+    .flatten()
     // .compact(lettegons) // now all branchBy returns are []s
     .value();
 
@@ -217,7 +216,7 @@ function createBoards({ letters, sideCount, sideSize, truncate = false }) {
       truncate,
       sideCount,
       sideSize,
-      lettegons
+      lettegons,
     });
     lettegons = result.pLettegons;
     // console.log("__!", letter, lettegons.length);

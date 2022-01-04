@@ -15,7 +15,7 @@ export default function App() {
   );
   const [sideCount, setSideCount] = React.useState(4);
   const [sideSize, setSideSize] = React.useState(3);
-  const [truncate, setTruncate] = React.useState(false);
+  const [truncate, setTruncate] = React.useState(true);
   const [selectedLettegon, setSelectedLettegon] = React.useState(
     // "ACE|BDF|GIK|HJL"
     null
@@ -27,7 +27,7 @@ export default function App() {
     letters,
     sideCount,
     sideSize,
-    truncate: truncate || forceTruncate
+    truncate: truncate || forceTruncate,
   });
   const truncated = resultFraction < 1;
 
@@ -110,53 +110,53 @@ The following represent as little as ${
       <br />
       {getResultsCount()}
       {/* {!selectedLettegon ? ( */}
-        <div
-          className="results"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            paddingTop: 32
-          }}
-        >
-          {lettegons.map(({ id, complete }, i) => (
-            <Lettegon
-              key={id}
-              setSelectedLettegon={setSelectedLettegon}
-              letters={letters}
-              sideCount={sideCount}
-              sideSize={sideSize}
-              id={id}
-              complete={complete}
-            />
-          ))}
-        </div>
+      <div
+        className="results"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          paddingTop: 32,
+        }}
+      >
+        {lettegons.map(({ id, complete }, i) => (
+          <Lettegon
+            key={id}
+            setSelectedLettegon={setSelectedLettegon}
+            letters={letters}
+            sideCount={sideCount}
+            sideSize={sideSize}
+            id={id}
+            complete={complete}
+          />
+        ))}
+      </div>
       {/* ) : ( */}
-        <Modal
-          open={!!selectedLettegon}
-          sx={{
-            p: "12px",
-            pb: "24px",
-            background: "none",
-            "& .lettegon": {
-              overflow: "auto",
-              maxHeight: "calc(100vh - 36px)"
-            }
-          }}
-          onBackdropClick={() => setSelectedLettegon(null)}
-        >
+      <Modal
+        open={!!selectedLettegon}
+        sx={{
+          p: "12px",
+          pb: "24px",
+          background: "none",
+          "& .lettegon": {
+            overflow: "auto",
+            maxHeight: "calc(100vh - 36px)",
+          },
+        }}
+        onBackdropClick={() => setSelectedLettegon(null)}
+      >
         {/* div for Modal to attach ref to, display contents to not interfere w/outside click */}
-          <div style={{ display: "contents" }}>
-            <Lettegon
-              // setSelectedLettegon={setSelectedLettegon}
-              editMode={true}
-              letters={letters}
-              sideCount={sideCount}
-              sideSize={sideSize}
-              id={selectedLettegon}
-              complete={true}
-            />
-          </div>
-        </Modal>
+        <div style={{ display: "contents" }}>
+          <Lettegon
+            // setSelectedLettegon={setSelectedLettegon}
+            editMode={true}
+            letters={letters}
+            sideCount={sideCount}
+            sideSize={sideSize}
+            id={selectedLettegon}
+            complete={true}
+          />
+        </div>
+      </Modal>
       {/* )} */}
     </div>
   );
