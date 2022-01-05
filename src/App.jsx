@@ -5,11 +5,28 @@ import Modal from "@mui/material/Modal";
 import "./styles.css";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import _ from "lodash";
+import { MAX_SIDE_SIZE, MAX_SIDES, MIN_SIDES, MIN_SIDE_SIZE } from "./consts";
+import { isValidConfig } from "./utils";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
 
+const CONFIG_PARAM = "c";
+const SOLUTION_PARAM = "s";
+
 export default function App() {
+  const params = new URLSearchParams(location.search);
+  const config = params.get(CONFIG_PARAM);
+  const solution = params.get(SOLUTION_PARAM);
+  if (isValidConfig(config)) {
+    return (
+      <PlayLettegon id={config.toUpperCase()} solution={solution} />
+    )
+  // } else if (location.search) {
+    // window.location.pathname = ""; // clear invalid
+    // location.search = ""
+  }
+  
   const [mode, setMode] = React.useState("generate"); // "selection", "edit"
   const [letters, setLetters] = React.useState(
     // "ABCDEFGHIJKL"
@@ -113,8 +130,8 @@ The following represent as little as ${
         type="range"
         id="sideCount"
         name="side count"
-        min="3"
-        max="8"
+        min={MIN_SIDES}
+        max={MAX_SIDES}
         value={sideCount}
       />
       <br />
@@ -124,8 +141,8 @@ The following represent as little as ${
         type="range"
         id="sideSize"
         name="side size"
-        min="1"
-        max="5"
+        min={MIN_SIDE_SIZE}
+        max={MAX_SIDE_SIZE}
         value={sideSize}
       />
       <br />
@@ -199,8 +216,8 @@ The following represent as little as ${
             key={id}
             setSelectedLettegon={mode !== "selection" ? _.noop : setSelectedLettegon}
             letters={allLetters}
-            sideCount={sideCount}
-            sideSize={sideSize}
+            // sideCount={sideCount}
+            // sideSize={sideSize}
             id={id}
             complete={complete}
           />
@@ -226,8 +243,8 @@ The following represent as little as ${
             // setSelectedLettegon={setSelectedLettegon}
             editMode={true}
             letters={allLetters}
-            sideCount={sideCount}
-            sideSize={sideSize}
+            // sideCount={sideCount}
+            // sideSize={sideSize}
             id={selectedLettegon}
             complete={true}
           />

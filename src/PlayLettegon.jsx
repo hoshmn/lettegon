@@ -39,14 +39,14 @@ function interpolate([v1, v2], ratio) {
   return v1 + (v2 - v1) * ratio;
 }
 
-export default function Lettegon({
+export default function PlayLettegon({
   id,
   complete,
   // sideCount,
   // sideSize,
   letters,
   editMode,
-  setSelectedLettegon,
+  setSelectedPlayLettegon,
 }) {
   const sideCount = id.split("|").length;
   const sideSize = id.split("|")[0].length;
@@ -192,13 +192,13 @@ export default function Lettegon({
 
   const getShareableLink = () => {
     if (!editMode) return null;
-    return <Link>click here to play this lettegon</Link>;
+    return <Link>click here to play this Playlettegon</Link>;
   };
 
   const handleSelect = () => {
     if (!complete || editMode) return;
 
-    setSelectedLettegon(id);
+    setSelectedPlayLettegon(id);
   };
 
   const { ref, inView } = useInView({
@@ -216,7 +216,7 @@ export default function Lettegon({
   return (
     <div
       ref={editMode ? null : ref}
-      className="lettegon"
+      className="Playlettegon"
       key={config}
       onClick={handleSelect}
       style={{
