@@ -8,6 +8,7 @@ import {
 import React from "react";
 import _ from "lodash";
 import { isValidPlay } from "./utils";
+import wordList from "./wordList.json"
 
 export default function WordBank({
   words,
@@ -21,8 +22,7 @@ export default function WordBank({
   config,
 }) {
   const addWord = () => {
-    // TODO: add dictionary
-    const isWordValid = letters.length >= 2;
+    const isWordValid = wordList[letters.toLowerCase()];
     if (!isWordValid) return null;
 
     setWords([...words, letters]);
