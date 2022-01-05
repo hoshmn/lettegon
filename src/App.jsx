@@ -5,38 +5,41 @@ import Modal from "@mui/material/Modal";
 import "./styles.css";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import _ from "lodash";
-import { MAX_SIDE_SIZE, MAX_SIDES, MIN_SIDES, MIN_SIDE_SIZE } from "./consts";
-import { getAllLetters, isValidConfig } from "./utils";
+import {
+  MAX_SIDE_SIZE,
+  MAX_SIDES,
+  MIN_SIDES,
+  MIN_SIDE_SIZE,
+  CONFIG_PARAM,
+  SOLUTION_PARAM,
+} from "./consts";
+import { decrypter, getAllLetters, isValidConfig } from "./utils";
 import PlayLettegon from "./PlayLettegon";
 import WordBank from "./WordBank";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
 
-const CONFIG_PARAM = "c";
-const SOLUTION_PARAM = "s";
-
 export default function App() {
   const params = new URLSearchParams(location.search);
   const config = params.get(CONFIG_PARAM);
-  const solution = params.get(SOLUTION_PARAM);
+  const encryptedSolution = params.get(SOLUTION_PARAM);
   if (isValidConfig(config)) {
-    return (
-      <PlayLettegon config={config.toUpperCase()} solution={solution} />
-    )
-  // } else if (location.search) {
+    const solution = decrypter(encryptedSolution);
+    return <PlayLettegon config={config.toUpperCase()} solution={solution} />;
+    // } else if (location.search) {
     // window.location.pathname = ""; // clear invalid
     // location.search = ""
   }
-  
+
   const [mode, setMode] = React.useState("generate"); // selection, play, edit?
   const [letters, setLetters] = React.useState(
     // "ABCDEFGHIJKL"
     ""
   );
   const [words, setWords] = React.useState([]);
-  const [sideCount, setSideCount] = React.useState(4);
-  const [sideSize, setSideSize] = React.useState(3);
+  const [sideCount, setSideCount] = React.useState(3);
+  const [sideSize, setSideSize] = React.useState(1);
   const [truncate, setTruncate] = React.useState(true);
   const [selectedLettegon, setSelectedLettegon] = React.useState(
     // "ACE|BDF|GIK|HJL"
@@ -82,7 +85,7 @@ The following represent as little as ${
       </code>
     );
   };
-  
+
   return (
     <div className="App">
       <code>Sides / Lettegon: {sideCount} </code>
@@ -155,7 +158,9 @@ The following represent as little as ${
         {lettegons.map(({ id, complete }, i) => (
           <Lettegon
             key={id}
-            setSelectedLettegon={mode === "selection" && setSelectedLettegon}
+            setSelectedLettegon={
+              mode === "selection" ? setSelectedLettegon : undefined
+            }
             letters={allLetters}
             // sideCount={sideCount}
             // sideSize={sideSize}
@@ -188,6 +193,7 @@ The following represent as little as ${
             // sideSize={sideSize}
             id={selectedLettegon}
             complete={true}
+            solution={words}
           />
         </div>
       </Modal>

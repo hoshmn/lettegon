@@ -14,18 +14,19 @@ export default function PlayLettegon({ config, solution }) {
   const [words, setWords] = React.useState([]);
   const textInputRef = React.createRef();
 
-  const addLetter = letter => {
+  const addLetter = (letter) => {
     if (letters.slice(-1) === letter) {
       // remove last letter
-      setLetters(letters.slice(0, -1))
+      setLetters(letters.slice(0, -1));
       return;
-    } else if (isValidPlay({ letters: letters + letter, config})) {
+    } else if (isValidPlay({ letters: letters + letter, config })) {
       // play if valid
-      setLetters(letters + letter)
+      setLetters(letters + letter);
     }
-  }
+  };
 
-  const isSolved = _.uniq(words.join("")).length === config.replaceAll("|", "").length;
+  const isSolved =
+    _.uniq(words.join("")).length === config.replaceAll("|", "").length;
 
   const allLetters = getAllLetters({ words, letters });
   return (
@@ -51,6 +52,8 @@ export default function PlayLettegon({ config, solution }) {
         complete={true}
       />
       {isSolved && "CONGRATULATIONS!"}
+      {isSolved && "The creator solved the puzzle with:"}
+      {isSolved && solution}
     </Box>
   );
 }

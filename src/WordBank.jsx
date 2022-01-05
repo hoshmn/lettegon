@@ -8,7 +8,7 @@ import {
 import React from "react";
 import _ from "lodash";
 import { isValidPlay } from "./utils";
-import wordList from "./wordList.json"
+import wordList from "./wordList.json";
 
 export default function WordBank({
   words,
@@ -53,7 +53,10 @@ export default function WordBank({
     ) {
       // prevent tampering with first letter through selection overwrite
       return;
-    } else if (mode === "play" && !isValidPlay({ letters: newLetters, config })) {
+    } else if (
+      mode === "play" &&
+      !isValidPlay({ letters: newLetters, config })
+    ) {
       // don't allow player to add letters not possible given config
       return;
     }

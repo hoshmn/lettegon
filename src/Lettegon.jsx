@@ -2,6 +2,8 @@ import { Box, Button, Link } from "@mui/material";
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import _ from "lodash";
+import { CONFIG_PARAM, SOLUTION_PARAM } from "./consts";
+import { encrypter } from "./utils";
 
 // const fontSize = 10;
 
@@ -48,6 +50,7 @@ export default function Lettegon({
   letters,
   editMode,
   setSelectedLettegon = _.noop,
+  solution = [],
 }) {
   const sideCount = id.split("|").length;
   const sideSize = id.split("|")[0].length;
@@ -193,7 +196,13 @@ export default function Lettegon({
 
   const getShareableLink = () => {
     if (!editMode) return null;
-    return <Link>click here to play this lettegon</Link>;
+    const sol = encrypter(solution.join(","));
+    const url = `${window.location.origin}/play?${CONFIG_PARAM}=${config}&${SOLUTION_PARAM}=${sol}`;
+    return (
+      <Link target="_blank" rel="noreferrer" href={url}>
+        click here to play this lettegon
+      </Link>
+    );
   };
 
   const handleSelect = () => {
