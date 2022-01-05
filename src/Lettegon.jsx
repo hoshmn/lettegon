@@ -44,13 +44,14 @@ export default function Lettegon({
   complete,
   // sideCount,
   // sideSize,
+  onClickLetter = _.noop,
   letters,
   editMode,
-  setSelectedLettegon,
+  setSelectedLettegon = _.noop,
 }) {
   const sideCount = id.split("|").length;
   const sideSize = id.split("|")[0].length;
-  
+
   const [config, setConfig] = React.useState(id);
   const letterCoords = {};
 
@@ -99,7 +100,7 @@ export default function Lettegon({
         const offset = 5.5;
         letterCoords[letter] = { x, y };
         return (
-          <g key={letter}>
+          <g key={letter} onClick={() => onClickLetter(letter)}>
             <circle cx={x} cy={y} r={10} fill="white" />
             <text
               x={x - offset}

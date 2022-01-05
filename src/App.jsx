@@ -6,7 +6,9 @@ import "./styles.css";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import _ from "lodash";
 import { MAX_SIDE_SIZE, MAX_SIDES, MIN_SIDES, MIN_SIDE_SIZE } from "./consts";
-import { isValidConfig } from "./utils";
+import { getAllLetters, isValidConfig } from "./utils";
+import PlayLettegon from "./PlayLettegon";
+import WordBank from "./WordBank";
 
 const sideTruncCap = 6;
 const forceTruncateTitle = `results automatically capped for Lettegons with ${sideTruncCap} or more sides`;
@@ -20,14 +22,14 @@ export default function App() {
   const solution = params.get(SOLUTION_PARAM);
   if (isValidConfig(config)) {
     return (
-      <PlayLettegon id={config.toUpperCase()} solution={solution} />
+      <PlayLettegon config={config.toUpperCase()} solution={solution} />
     )
   // } else if (location.search) {
     // window.location.pathname = ""; // clear invalid
     // location.search = ""
   }
   
-  const [mode, setMode] = React.useState("generate"); // "selection", "edit"
+  const [mode, setMode] = React.useState("generate"); // selection, play, edit?
   const [letters, setLetters] = React.useState(
     // "ABCDEFGHIJKL"
     ""
@@ -45,9 +47,7 @@ export default function App() {
 
   const forceTruncate = sideCount >= sideTruncCap;
 
-  const allLetters = [...words, letters]
-    .map((w, i) => (i ? w.slice(1) : w))
-    .join("");
+  const allLetters = getAllLetters({ words, letters });
   // console.log(letters, "allLetters", allLetters);
   const { lettegons, resultFraction } = createBoards({
     letters: allLetters,
@@ -82,45 +82,6 @@ The following represent as little as ${
       </code>
     );
   };
-
-  const addWord = () => {
-    // TODO: add dictionary
-    const isWordValid = letters.length >= 2;
-    if (!isWordValid) return null;
-
-    setWords([...words, letters]);
-    if (isCompleted) {
-      setLetters("");
-      setMode("selection");
-    } else {
-      setLetters(letters.slice(-1));
-      textInputRef.current.focus();
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.code.toLowerCase() === "enter") addWord();
-  };
-
-  const updateLetters = (e) => {
-    let newLetters = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
-    if (!newLetters && words.length) {
-      newLetters = words[words.length - 1];
-      const newWords = words.slice(0, -1);
-      setWords(newWords);
-    } else if (words.length && letters.length && !newLetters.startsWith(letters[0])) {
-      // prevent tampering with first letter through selection overwrite
-      return;
-    }
-    setLetters(newLetters);
-  };
-
-  const resumeEditing = () => {
-    const lastWord = words[words.length - 1];
-    setLetters(lastWord);
-    setWords(words.slice(0, -1));
-    setMode("generate");
-  }
   
   return (
     <div className="App">
@@ -169,36 +130,16 @@ The following represent as little as ${
       <br />
       <code>Generate LETTEGONs!</code>
       <br />
-      {words.join(", ")}
-      {mode !== "generate" && (
-        <Button onClick={resumeEditing}>Edit</Button>
-      )}
-      <br />
-      {/* <input
-        onChange={(e) =>
-          setLetters(e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))
-        }
-      /> */}
-      {mode !== "generate" ? null : (
-        <TextField
-          inputRef={textInputRef}
-          autoFocus={true}
-          variant="standard"
-          value={letters}
-          onChange={updateLetters}
-          onKeyPress={handleKeyPress}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton aria-label="add word" onClick={addWord} edge="end">
-                  {isCompleted ? "✓" : "+"}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      )}
-
+      <WordBank
+        words={words}
+        letters={letters}
+        textInputRef={textInputRef}
+        mode={mode}
+        setLetters={setLetters}
+        setWords={setWords}
+        setMode={setMode}
+        isCompleted={isCompleted}
+      />
       <br />
       {getResultsCount()}
       <br />
@@ -214,7 +155,7 @@ The following represent as little as ${
         {lettegons.map(({ id, complete }, i) => (
           <Lettegon
             key={id}
-            setSelectedLettegon={mode !== "selection" ? _.noop : setSelectedLettegon}
+            setSelectedLettegon={mode === "selection" && setSelectedLettegon}
             letters={allLetters}
             // sideCount={sideCount}
             // sideSize={sideSize}

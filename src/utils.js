@@ -50,3 +50,19 @@ export const isValidConfig = (config) => {
     return false;
   }
 };
+
+export const isValidPlay = ({ letters, config }) => {
+  const sides = config.split("|");
+  let lastSide = null;
+  for (let i = 0; i < letters.length; i++) {
+    const ltr = letters[i];
+    const sideWithLtr = sides.find((s) => s.includes(ltr));
+    if (!sideWithLtr || sideWithLtr === lastSide) return false;
+
+    lastSide = sideWithLtr;
+  }
+  return true;
+};
+
+export const getAllLetters = ({ words, letters }) =>
+  [...words, letters].map((w, i) => (i ? w.slice(1) : w)).join("");
